@@ -21,17 +21,16 @@ from thrift.server import TServer
 class FileOperationHandler:
     def addToFile(self, s):
 	try:
-		f = open('b.txt')
-		content = f.read()
-		f.close()
-		f = open('b.txt','w')
-		f.write(s)
-		f.write(content)
-		f.close()
+		cmd1="cat b.txt"+" >> "+ s +"; cat "+ s + " > b.txt"
+		stdin,stdout = os.popen2(cmd1)
+  		stdin.close()
+		stdout.close()
 		return "success"
         except:
 		print "error opening file"
 		return "error"
+
+	
 
 if __name__ == '__main__':
 

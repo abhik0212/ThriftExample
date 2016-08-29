@@ -47,4 +47,4 @@ try:
     transport.close()
 
 except Thrift.TException, tx:
-    print 'client :Something went wrong : %s' % (tx.message)
+    print 'client :ServerA may not be responding : %s' % (tx.message)

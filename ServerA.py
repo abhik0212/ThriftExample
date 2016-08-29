@@ -38,7 +38,7 @@ def appendtoB(lines):
 	return response
 
     except Thrift.TException, tx:
-        print 'ServerA:Something went wrong : %s' % (tx.message)
+        print 'ServerA:Problem in calling serverB : %s' % (tx.message)
         return "Problem in calling server B"
     
 
@@ -47,12 +47,14 @@ class FileOperationHandler:
     def deleteFromFile(self,n):
 	  try:
 		  f="a.txt"
-		  stdin,stdout = os.popen2("tail -n "+str(n)+" "+f)
+		  stdin,stdout = os.popen2("tail -n "+str(n)+" "+f+">temp1.txt")
 		  stdin.close()
-		  lines = stdout.readlines(); stdout.close()
-		  lines="".join(lines)
-		  print lines
-		  if appendtoB(lines)=="success":
+		  stdout.close()
+	  except:
+		  print "Could not open a.txt"
+		  return "Could not open a.txt"
+	  try:
+		  if appendtoB("temp1.txt")=="success":
 			  stdin,stdout = os.popen2("sed -i -e :a -e '$d;N;2,"+str(n)+"ba' -e 'P;D' "+f)
 			  stdin.close()
 			  stdout.close()
@@ -61,6 +63,7 @@ class FileOperationHandler:
 			  return "deletion not done because ServerB could not append successfully"
 	  except:
 		  print "ServerB may not be responding"
+		  return "ServerB may not be responding"
 
 if __name__ == '__main__':
 
